@@ -45,12 +45,19 @@ def inject_clients():
         tokenCredential,
         "https://cognitiveservices.azure.com/.default",
     )
-    chatcompletions_model_name = os.environ["AZURE_OPENAI_MODEL_NAME"]
-    openai_endpoint = os.environ["AZURE_OPENAI_ENDPOINT"]
-    search_endpoint = os.environ["SEARCH_SERVICE_ENDPOINT"]
-    search_index_name = os.environ["SEARCH_INDEX_NAME"]
-    knowledge_agent_name = os.environ["KNOWLEDGE_AGENT_NAME"]
-    openai_deployment_name = os.environ["AZURE_OPENAI_DEPLOYMENT"]
+
+    def require_env(var: str) -> str:
+        value = os.getenv(var)
+        if not value:
+            raise EnvironmentError(f"Missing environment variable: {var}")
+        return value
+
+    chatcompletions_model_name = require_env("AZURE_OPENAI_MODEL_NAME")
+    openai_endpoint = require_env("AZURE_OPENAI_ENDPOINT")
+    search_endpoint = require_env("SEARCH_SERVICE_ENDPOINT")
+    search_index_name = require_env("SEARCH_INDEX_NAME")
+    knowledge_agent_name = os.getenv("KNOWLEDGE_AGENT_NAME")
+    openai_deployment_name = require_env("AZURE_OPENAI_DEPLOYMENT")
 
     search_client = SearchClient(
         endpoint=search_endpoint,
